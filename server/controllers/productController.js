@@ -1,23 +1,23 @@
-const Collection = require("../models/Collection");
-const Product = require("../models/Product");
-const Sizes = require("../models/Sizes");
-const axios = require("axios");
-const jwt = require("jsonwebtoken");
+const Collection = require('../models/Collection');
+const Product = require('../models/Product');
+const Sizes = require('../models/Sizes');
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 exports.getCollectionProducts = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const { collectionId } = req.params;
 
     const collection = await Collection.findById(collectionId);
     if (!collection || !collection.designerId.equals(decoded.id)) {
-      return res.status(403).json({ message: "Access denied" });
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     const products = await Product.find({ collectionId });
@@ -28,13 +28,13 @@ exports.getCollectionProducts = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const {
       name,
@@ -53,7 +53,7 @@ exports.createProduct = async (req, res) => {
       jsonUrl,
     } = req.body;
 
-    console.log("Request Body:", req.body); // Add logging
+    console.log('Request Body:', req.body); // Add logging
 
     if (
       !name ||
@@ -65,12 +65,12 @@ exports.createProduct = async (req, res) => {
       !collectionId ||
       !imageUrl1
     ) {
-      return res.status(400).json({ message: "Required fields are missing" });
+      return res.status(400).json({ message: 'Required fields are missing' });
     }
 
     const collection = await Collection.findById(collectionId);
     if (!collection || !collection.designerId.equals(decoded.id)) {
-      return res.status(403).json({ message: "Access denied" });
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     const product = new Product({
@@ -98,7 +98,7 @@ exports.createProduct = async (req, res) => {
 
     res.status(201).json(product);
   } catch (error) {
-    console.error("Error adding product:", error); // Add logging
+    console.error('Error adding product:', error); // Add logging
     res.status(400).json({ message: error.message });
   }
 };
@@ -106,13 +106,13 @@ exports.createProduct = async (req, res) => {
 // const transtocol = process.env.TRANSTOCOL || "http";
 // const port = process.env.PORT || "726";
 exports.updateProduct = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const { id } = req.params;
     const {
@@ -134,7 +134,7 @@ exports.updateProduct = async (req, res) => {
     const product = await Product.findById(id);
     const collection = await Collection.findById(product.collectionId);
     if (!product || !collection.designerId.equals(decoded.id)) {
-      return res.status(403).json({ message: "Access denied" });
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     product.name = name || product.name;
@@ -168,27 +168,27 @@ exports.updateProduct = async (req, res) => {
 // const domain = process.env.DOMAIN || ".net"
 // const dest = `${transtocol}://${region}check${domain}`;
 exports.deleteProduct = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const { id } = req.params;
 
-    console.log("Product ID:", id); // Add logging
+    console.log('Product ID:', id); // Add logging
     const product = await Product.findById(id);
     if (!product) {
-      console.log("Product not found"); // Add logging
-      return res.status(404).json({ message: "Product not found" });
+      console.log('Product not found'); // Add logging
+      return res.status(404).json({ message: 'Product not found' });
     }
 
     const collection = await Collection.findById(product.collectionId);
     if (!collection || !collection.designerId.equals(decoded.id)) {
-      console.log("Access denied"); // Add logging
-      return res.status(403).json({ message: "Access denied" });
+      console.log('Access denied'); // Add logging
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     // Remove the product reference from the collection
@@ -198,9 +198,9 @@ exports.deleteProduct = async (req, res) => {
     // Delete the product
     await Product.deleteOne({ _id: id });
 
-    res.status(200).json({ message: "Product deleted successfully" });
+    res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-    console.error("Error deleting product:", error); // Add logging
+    console.error('Error deleting product:', error); // Add logging
     res.status(400).json({ message: error.message });
   }
 };
@@ -215,7 +215,7 @@ exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
     res.status(200).json(product);
   } catch (error) {
@@ -250,14 +250,14 @@ exports.listProduct = async (req, res) => {
     const product = await Product.findOne({ productAddress: tokenMint });
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
 
     product.listed = true;
     product.price = price; // Use the price provided in the request
     await product.save();
 
-    res.status(200).json({ message: "Product listed successfully" });
+    res.status(200).json({ message: 'Product listed successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

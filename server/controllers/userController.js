@@ -1,18 +1,18 @@
-const User = require("../models/User");
-const Collection = require("../models/Collection");
-const jwt = require("jsonwebtoken");
+const User = require('../models/User');
+const Collection = require('../models/Collection');
+const jwt = require('jsonwebtoken');
 
 exports.getUserInfo = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const user = await User.findById(decoded.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.status(200).json({
       username: user.username,
@@ -21,18 +21,18 @@ exports.getUserInfo = async (req, res) => {
       userId: user._id,
     });
   } catch (error) {
-    res.status(400).json({ message: "Invalid token" });
+    res.status(400).json({ message: 'Invalid token' });
   }
 };
 
 exports.updateUserInfo = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Access denied" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Access denied' });
 
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your_jwt_secret"
+      process.env.JWT_SECRET || 'your_jwt_secret'
     );
     const { email, solanaWallet } = req.body;
 
@@ -43,7 +43,7 @@ exports.updateUserInfo = async (req, res) => {
     );
 
     if (!updatedUser)
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
 
     res.status(200).json({
       username: updatedUser.username,
@@ -52,18 +52,18 @@ exports.updateUserInfo = async (req, res) => {
       userId: updatedUser._id,
     });
   } catch (error) {
-    res.status(400).json({ message: "Invalid token" });
+    res.status(400).json({ message: 'Invalid token' });
   }
 };
 
 exports.getAllDesigners = async (req, res) => {
   try {
-    const designers = await User.find({ role: "designer" }).select(
-      "username email solanaWallet"
+    const designers = await User.find({ role: 'designer' }).select(
+      'username email solanaWallet'
     );
     res.status(200).json(designers);
   } catch (error) {
-    console.error("Error fetching designers:", error);
+    console.error('Error fetching designers:', error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -71,9 +71,9 @@ exports.getAllDesigners = async (req, res) => {
 exports.getDesignerByUsername = async (req, res) => {
   try {
     const { username } = req.params;
-    const designer = await User.findOne({ username, role: "designer" });
+    const designer = await User.findOne({ username, role: 'designer' });
     if (!designer)
-      return res.status(404).json({ message: "Designer not found" });
+      return res.status(404).json({ message: 'Designer not found' });
     res.status(200).json(designer);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -84,17 +84,17 @@ exports.getDesignerById = async (req, res) => {
   try {
     const { designerId } = req.params;
     const designer = await User.findById(designerId).select(
-      "username solanaWallet"
+      'username solanaWallet'
     );
     if (!designer)
-      return res.status(404).json({ message: "Designer not found" });
+      return res.status(404).json({ message: 'Designer not found' });
 
     const collections = await Collection.find({ designerId }).select(
-      "name imageUrl"
+      'name imageUrl'
     );
     res.status(200).json({ ...designer.toObject(), collections });
   } catch (error) {
-    console.error("Error fetching designer profile:", error);
-    res.status(500).json({ message: "router error" });
+    console.error('Error fetching designer profile:', error);
+    res.status(500).json({ message: 'router error' });
   }
 };

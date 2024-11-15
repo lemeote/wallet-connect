@@ -1,7 +1,7 @@
-const Cart = require("../../models/Cart");
-const Review = require("../../models/Review");
-const Order = require("../../models/Order");
-const Whislist = require("../../models/WishList");
+const Cart = require('../../models/Cart');
+const Review = require('../../models/Review');
+const Order = require('../../models/Order');
+const Whislist = require('../../models/WishList');
 
 module.exports = async (product, user, type) => {
   let hasOnCart = null;
@@ -10,7 +10,7 @@ module.exports = async (product, user, type) => {
   let hasReviewed = null;
   if (user) {
     //cart bahek aru ko lagi check gareko
-    if (type !== "carts") {
+    if (type !== 'carts') {
       //has on cart?
       hasOnCart = await Cart.findOne({
         user: user._id,
@@ -21,7 +21,7 @@ module.exports = async (product, user, type) => {
     }
 
     //wishlist bahek aru ko lagi check gareko
-    if (type !== "wishlists") {
+    if (type !== 'wishlists') {
       // has on wishlist?
       hasOnWishlist = await Whislist.findOne({
         user: user._id,
@@ -31,15 +31,15 @@ module.exports = async (product, user, type) => {
       if (!hasOnWishlist) hasOnWishlist = false;
     }
 
-    if (type === "product") {
+    if (type === 'product') {
       //has bought?
       hasBought = await Order.findOne({
         user: user,
         $or: [
-          { "status.currentStatus": "complete" },
+          { 'status.currentStatus': 'complete' },
           {
-            "status.currentStatus": "tobereturned",
-            "status.currentStatus": "return",
+            'status.currentStatus': 'tobereturned',
+            'status.currentStatus': 'return',
           },
         ],
       });
@@ -49,7 +49,7 @@ module.exports = async (product, user, type) => {
       hasReviewed = await Review.findOne({
         user: user,
         product: product._id,
-      }).select("comment star user");
+      }).select('comment star user');
       if (!hasReviewed) hasReviewed = false;
     }
   }

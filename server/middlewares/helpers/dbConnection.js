@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Fawn = require("fawn");
+const mongoose = require('mongoose');
+const Fawn = require('fawn');
 
 module.exports = () => {
   const self = module.exports;
@@ -10,10 +10,10 @@ module.exports = () => {
       useUnifiedTopology: true,
       useFindAndModify: false,
     })
-    .then(() => console.log("DB Connected"))
+    .then(() => console.log('DB Connected'))
     .catch((err) => {
       console.error(
-        "Failed to connect to the database on startup - retrying in 5 sec"
+        'Failed to connect to the database on startup - retrying in 5 sec'
       );
       setTimeout(self, 5000);
     });

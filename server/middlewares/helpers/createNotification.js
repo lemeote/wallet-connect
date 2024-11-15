@@ -1,6 +1,6 @@
-const Notification = require("../../models/Notification");
-const SocketMapping = require("../../models/SocketMapping");
-const { dropRight } = require("lodash");
+const Notification = require('../../models/Notification');
+const SocketMapping = require('../../models/SocketMapping');
+const { dropRight } = require('lodash');
 module.exports = async (io, adminId, notificationObj) => {
   //notify to the admin through socket.io
   //first save notification
@@ -30,7 +30,7 @@ module.exports = async (io, adminId, notificationObj) => {
   if (socketUser.length) {
     //for every same login user emit notification
     socketUser.forEach((u) => {
-      io.to(u.socketId).emit("notification", {
+      io.to(u.socketId).emit('notification', {
         noOfUnseen: notificationObjOfAdmin.noOfUnseen,
       });
     });
