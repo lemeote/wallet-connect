@@ -1,37 +1,19 @@
-// src/app/Providers.tsx
 "use client";
 
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
-import '@solana/wallet-adapter-react-ui/styles.css';
-import { useMemo } from 'react';
+import SolanaProviders from "./SolanaProviders";
+import EthereumProviders from "./EthereumProviders";
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
-  const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => `https://api.${network}.solana.com`, [network]);
+import { WagmiProvider, cookieToInitialState } from "wagmi";
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-    ],
-    [network]
-  );
-
-  return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          {children}
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
-  );
+type Props = {
+  children: React.ReactNode;
+  cookie?: string | null;
 };
 
-export default Providers;
+export default function Providers({ children, cookie }: Props) {
+  return (
+    <SolanaProviders>
+      <EthereumProviders cookie={cookie}>{children}</EthereumProviders>
+    </SolanaProviders>
+  );
+};
